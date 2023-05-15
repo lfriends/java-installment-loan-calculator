@@ -21,22 +21,20 @@ that calculates the monthly installment amounts for a loan.
 To run the Installment Plan Calculator program, you need to have the following:
 
 - Java Development Kit (JDK) installed on your machine.
-- A Java IDE or text editor for editing and running the Java code. 
-This is a Netbeans-Ant project.
-
-- A Java IDE 
+- A Java IDE or text editor for editing and running the Java code. This is a Netbeans-Ant project.
+- *Apache Ant™* if you prefer not using ad IDE
 
 ### Bulding the Project
 
 1. Clone or download the project repository to your local machine.
 ```shell
-git clone https://github.com/lfriends/java-installment-loan-calculator.git
-cd java-installment-loan-calculator
+$ git clone https://github.com/lfriends/java-installment-loan-calculator.git
+$ cd java-installment-loan-calculator
 ```
 2. if you use *Apache Ant™*: 
 ```shell
-cd ./java-installment-loan-calculator
-ant
+$ cd ./java-installment-loan-calculator
+$ ant
 ```
 .OR.
 
@@ -48,14 +46,14 @@ ant
 
 You can import the Jar in your project, or make a Loan Plan simulation directrly from a command-line interface:
 ```shell
-java -jar "lfIntallmentPlan.jar"
+$ java -jar "lfIntallmentPlan.jar"
 ```
 
 
 ## Example Usage
 
 ```shell
-java -jar "lfIntallmentPlan.jar"
+$ java -jar "lfIntallmentPlan.jar"
 
 ====== Installment Calculator  ::  github.com/lfriends ======
 Please enter the loan amount (Eg 10000):
