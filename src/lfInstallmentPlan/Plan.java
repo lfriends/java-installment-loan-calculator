@@ -20,6 +20,7 @@ public class Plan {
     private double singleInstallmentAmount;
     private java.util.Date firstDueDate;
     private java.util.Date lastDueDate;
+    final int numberOfDecimals =2 ;
 
     java.util.List<Installment> installments ;
 
@@ -34,31 +35,20 @@ public class Plan {
     
     public void doCalculate(){
 
-        this.singleInstallmentAmount = principalAmount * interestRatePerMonth /  (1- Math.pow(1+interestRatePerMonth , -numberOfInstallments) ) ;
-
-        this.installments = new java.util.ArrayList<>();
+        singleInstallmentAmount = Utils.myRound( principalAmount * interestRatePerMonth /  (1- Math.pow(1+interestRatePerMonth , -numberOfInstallments) ) , numberOfDecimals );
+        totalAmount = singleInstallmentAmount * numberOfInstallments ;
+        interestAmount = Utils.myRound( totalAmount - principalAmount, numberOfDecimals ) ;
+        installments = new java.util.ArrayList<>();
         
         for (int currentInstallmentNumber =1;currentInstallmentNumber <= numberOfInstallments; currentInstallmentNumber ++)
         {
             Installment prevInst = null;
             if (currentInstallmentNumber >1) prevInst = installments.get(currentInstallmentNumber -2) ;
-            Installment newInst = new Installment( singleInstallmentAmount, principalAmount, currentInstallmentNumber , numberOfInstallments, firstDueDate, interestRatePerMonth, prevInst ) ;
+            Installment newInst = new Installment( this, currentInstallmentNumber, prevInst ) ;
             installments.add( newInst ) ;
             this.lastDueDate = newInst.getDueDate() ;
         }  
         
-        totalAmount=0;
-        interestAmount=0;
-        for(Installment r :installments){
-            this.totalAmount += r.getTotalAmount();
-            this.interestAmount += r.getInterestAmount();
-        }
-        
-        for(Installment r :installments){
-            Installment prevInst = null ;
-            if (r.getNumber()>1) prevInst = installments.get( r.getNumber()-2 );
-            r.updateOutstandingValues(prevInst, this.interestAmount);
-        }    
     }
 
     public void setNumberOfInstallments(int numberOfInstallments) {
@@ -86,6 +76,10 @@ public class Plan {
         return interestRatePerYear;
     }
 
+    public double getInterestRatePerMonth() {
+        return interestRatePerMonth;
+    }
+    
     public double getTotalAmount() {
         return totalAmount;
     }

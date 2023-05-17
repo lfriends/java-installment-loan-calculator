@@ -78,4 +78,11 @@ public class Utils {
         calendar.setTime(dt);
         return calendar.get(Calendar.MONTH); 
     }        
+
+    public static double myRound( double d, int decimals ){
+        d = d * Math.pow(10 , decimals);
+        d = Math.round(d);
+        d = d / Math.pow(10 , decimals) ;
+        return d ;
+    }
 }
