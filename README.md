@@ -13,7 +13,7 @@ that calculates the monthly installment amounts for a loan.
     - 30th of June (sice Jun has 30 days, the program will automatically decrese the *due date* to the 30th of the month).
     - 31st of July
     - and so on.
-- **Advance payment:** possibility to define an *advance payment* amount, which will excluded from the interest calculation (See Example 2)
+- **Advance payment:** possibility to define an *advance payment* amount, which will excluded from the interest calculation (See [Example 2](#example-2-with-advance-payment))
 
 
 ## Getting Started
