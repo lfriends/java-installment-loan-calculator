@@ -42,9 +42,7 @@ public class Plan {
         
         for (int currentInstallmentNumber =1;currentInstallmentNumber <= numberOfInstallments; currentInstallmentNumber ++)
         {
-            Installment prevInst = null;
-            if (currentInstallmentNumber >1) prevInst = installments.get(currentInstallmentNumber -2) ;
-            Installment newInst = new Installment( this, currentInstallmentNumber, prevInst ) ;
+            Installment newInst = new Installment( this, currentInstallmentNumber ) ;
             installments.add( newInst ) ;
             this.lastDueDate = newInst.getDueDate() ;
         }  

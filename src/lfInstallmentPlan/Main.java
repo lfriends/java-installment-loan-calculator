@@ -27,14 +27,16 @@ public class Main {
         String str_interest = scanner.nextLine();
         System.out.println("Please enter the loan duration inmonts (Eg 12):");
         String str_months = scanner.nextLine();
-        System.out.println("Please enter the 1st due date (DD/MM/YY .or. DDMMYY) (Eg 31/12/23 .or 311223):");
+        System.out.println("Please enter the first due date or press ENTER for current date (Format: DD/MM/YY .or. DDMMYY - Eg 31/12/23 or 311223):");
         String str_date = scanner.nextLine();
 
         java.util.Date startDate = null ;
         if (str_date.length()==6){
             startDate  = Utils.strf2date(str_date, "ddMMyy");
-        }else{
+        }else if (str_date.length()==8){
             startDate  = Utils.strf2date(str_date, "dd/MM/yy");
+        }else{
+            startDate  = new java.util.Date() ;
         }
         
         double initialAmount = Double.parseDouble(str_amount);

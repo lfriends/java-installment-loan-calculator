@@ -20,14 +20,16 @@ public class Installment {
     private double debtPaidPost; 
     private final java.util.Date dueDate;
 
-    public Installment(Plan plan, int currentInstallmentNumber, Installment prevInstallment ) {
+    public Installment(Plan plan, int currentInstallmentNumber ) {
        
         this.number = currentInstallmentNumber;
         this.total = plan.getSingleInstallmentAmount();
+        Installment prevInstallment = null ;
         
         if (currentInstallmentNumber==1){
             this.debtPaidPre = 0 ;
         }else{
+            prevInstallment = plan.getInstallments().get(currentInstallmentNumber-2);
             this.debtPaidPre = prevInstallment.debtPaidPre + Utils.myRound(prevInstallment.getPrincipalAmount(), plan.numberOfDecimals );
         }
         
