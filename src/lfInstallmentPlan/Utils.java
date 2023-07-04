@@ -38,6 +38,17 @@ public class Utils {
         return rpad(source_string,target_length," ");
     }
     
+    public static String lpad( String source_string, int target_length, String pad_string ){
+        if (source_string==null)source_string="";
+        if (pad_string==null || pad_string.equals("") )pad_string=" ";
+        while (source_string.length()<target_length)source_string=pad_string+source_string;
+        return source_string.substring(0, target_length);
+    }
+    
+    public static String lpad( String source_string, int target_length ){
+        return lpad(source_string,target_length," ");
+    }
+
     public static String double2s(double d){
         DecimalFormatSymbols dfs  = new DecimalFormatSymbols(Locale.ITALIAN) ;
         NumberFormat number2dec = new DecimalFormat("#,##0.00",dfs);

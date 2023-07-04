@@ -151,13 +151,12 @@ public class Plan {
     }
     
     public String toStringAsTable(){
-        String res = "" ;
         StringBuilder sb = new StringBuilder();
 		
-        int x = Utils.double2s(this.getTotalAmount() ).length() ;
-        if (x<8)x=8;
+        int scale  = Utils.double2s(this.getTotalAmount() ).length() ;
+        if (scale <8)scale =8;
 
-        String line =  Utils.rpad( "", 5 + ((x+3)*6), "-") + "\n";
+        String line =  Utils.rpad( "", 5 + ((scale +3)*6), "-") + "\n";
         
         sb.append( line);     
         sb.append(Utils.rpad("Principal ",25,".")).append(" ").append(Utils.double2s(this.getPrincipalAmount() )).append("\n");
@@ -171,43 +170,43 @@ public class Plan {
         sb.append("\n"); 
         
         sb.append( Utils.rpad( "Month", 5)).append(" | ");
-        sb.append( Utils.rpad( "Due date", x) ).append(" | ");
-        sb.append( Utils.rpad( "Installment", x) ).append(" | ");
-        sb.append( Utils.rpad( "Principal", x) ).append(" | ");
-        sb.append( Utils.rpad( "Interest", x) ).append(" | ");
-        sb.append( Utils.rpad( "Balance", x)).append(" | ");
-        sb.append( Utils.rpad( "Debt Paid", x) ).append(" \n");
+        sb.append( Utils.rpad( "Due date", scale ) ).append(" | ");
+        sb.append( Utils.rpad( "Installment", scale ) ).append(" | ");
+        sb.append( Utils.rpad( "Principal", scale ) ).append(" | ");
+        sb.append( Utils.rpad( "Interest", scale ) ).append(" | ");
+        sb.append( Utils.rpad( "Balance", scale )).append(" | ");
+        sb.append( Utils.rpad( "Debt Paid", scale ) ).append(" \n");
         sb.append(line);
         
         if (this.getAdvancePaymentAmount()>0){
-            sb.append(Utils.rpad( "ADV PAYMENT", 5)).append(" | ");
-            sb.append(Utils.rpad( "--", x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(this.getAdvancePaymentAmount()), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(this.getAdvancePaymentAmount()), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(0d), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(this.getTotalAmount()-this.getAdvancePaymentAmount() ), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(this.getAdvancePaymentAmount()), x)).append(" \n");
+            sb.append(Utils.lpad( "ADV PAYMENT", 5)).append(" | ");
+            sb.append(Utils.lpad( "--", scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(this.getAdvancePaymentAmount()), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(this.getAdvancePaymentAmount()), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(0d), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(this.getTotalAmount()-this.getAdvancePaymentAmount() ), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(this.getAdvancePaymentAmount()), scale )).append(" \n");
             
         }
         
         for ( Installment i : this.getInstallments() ){
-            sb.append(Utils.rpad( ""+i.getNumber(), 5, " ")).append(" | ");
-            sb.append(Utils.rpad( Utils.date2s(i.getDueDate()), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getTotalAmount()), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getPrincipalAmount()), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getInterestAmount()), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getOutstandingPrincipal()), x)).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getDebtPaid()), x)).append(" \n");
+            sb.append(Utils.lpad( ""+i.getNumber(), 5, " ")).append(" | ");
+            sb.append(Utils.lpad( Utils.date2s(i.getDueDate()), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(i.getTotalAmount()), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(i.getPrincipalAmount()), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(i.getInterestAmount()), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(i.getOutstandingPrincipal()), scale )).append(" | ");
+            sb.append(Utils.lpad( Utils.double2s(i.getDebtPaid()), scale )).append(" \n");
         }
         sb.append(line);
         
-        sb.append( Utils.rpad( "Total", 5)).append("   ");
-        sb.append( Utils.rpad( "", x) ).append(" | ");
-        sb.append( Utils.rpad( Utils.double2s(this.getTotalAmount()), x) ).append(" | ");
-        sb.append( Utils.rpad( Utils.double2s(this.getPrincipalAmount()), x) ).append(" | ");
-        sb.append( Utils.rpad( Utils.double2s(this.getInterestAmount()) , x) ).append(" | ");
-        sb.append( Utils.rpad( "", x)).append("   ");
-        sb.append( Utils.rpad( "", x) ).append("\n");
+        sb.append( Utils.lpad( "Total", 5)).append("   ");
+        sb.append( Utils.lpad( "", scale ) ).append(" | ");
+        sb.append( Utils.lpad( Utils.double2s(this.getTotalAmount()), scale ) ).append(" | ");
+        sb.append( Utils.lpad( Utils.double2s(this.getPrincipalAmount()), scale ) ).append(" | ");
+        sb.append( Utils.lpad( Utils.double2s(this.getInterestAmount()) , scale ) ).append(" | ");
+        sb.append( Utils.lpad( "", scale )).append("   ");
+        sb.append( Utils.lpad( "", scale ) ).append("\n");
         sb.append(line);
                 
         return sb.toString();
