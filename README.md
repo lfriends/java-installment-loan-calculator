@@ -40,7 +40,7 @@ $ ant
 ```
 .OR.
 
-3. Open the project in your preferred IDE or text editor (Eg Netbeans, Eclipse)
+3. Open the project in your preferred IDE or text editor (Eg Netbeans, Eclipse -> Menu -> File -> Open projects from file system ... )
 3. then run the "Build" or "Run" command
 
 
