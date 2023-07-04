@@ -15,9 +15,7 @@ public class Main {
      */
     public static void main(String[] args) {
        
-        //System.out.print( (new Plan ( 10000, 12, 4.5, new java.util.Date() )).toStringAsTable() ); 
-        //System.out.print( (new Plan ( 11000, 12, 4.5, new java.util.Date() , 1000 )).toStringAsTable() ); 
-        //1if(true)return;
+        //System.out.print( (new Plan ( 10000, 12, 4.5, new java.util.Date() )).toStringAsTable() ); if(true)return;
         
         System.out.println("====== Installment Calculator  ::  github.com/lfriends ======");
         

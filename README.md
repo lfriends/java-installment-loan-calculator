@@ -15,6 +15,7 @@ that calculates the monthly installment amounts for a loan.
     - and so on.
 - **Advance payment:** possibility to define an *advance payment* amount, which will be excluded from the interest calculation (See [Example 2](#example-2-with-advance-payment))
 
+![sample](./assets/loan-example.jpg)
 
 ## Getting Started
 
