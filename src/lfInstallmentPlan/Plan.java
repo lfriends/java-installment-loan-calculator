@@ -48,9 +48,16 @@ public class Plan {
         double netPrincipalAmount = principalAmount ;
         netPrincipalAmount -= advancePaymentAmount;
         
-        singleInstallmentAmount = Utils.myRound( netPrincipalAmount * interestRatePerMonth /  (1- Math.pow(1+interestRatePerMonth , -numberOfInstallments) ) , numberOfDecimals );
-        totalAmount = singleInstallmentAmount * numberOfInstallments + advancePaymentAmount ;
-        interestAmount = Utils.myRound( totalAmount - principalAmount, numberOfDecimals ) ;
+        if (getInterestRatePerMonth()>0){
+            singleInstallmentAmount = Utils.myRound( netPrincipalAmount * interestRatePerMonth /  (1- Math.pow(1+interestRatePerMonth , -numberOfInstallments) ) , numberOfDecimals );
+            totalAmount = singleInstallmentAmount * numberOfInstallments + advancePaymentAmount ;
+            interestAmount = Utils.myRound( totalAmount - principalAmount, numberOfDecimals ) ;
+        }else{
+            singleInstallmentAmount = Utils.myRound( netPrincipalAmount / numberOfInstallments  , numberOfDecimals );
+            totalAmount= netPrincipalAmount + advancePaymentAmount ;
+            interestAmount=0;
+        }
+                
         installments = new java.util.ArrayList<>();
         
         

@@ -11,9 +11,9 @@ import java.util.Date;
 public class Installment {
     
     private final int number;
-    private final double total;
+    private double total;
     private final double principal;
-    private final double interests;
+    private double interests;
     private double outstandingPrincipal ;
     private double outstandingInterests; 
     private double debtPaidPre; 
@@ -43,6 +43,13 @@ public class Installment {
             this.principal = prevInstallment .principal * (1 + plan.getInterestRatePerMonth() ) ;
         }
         this.interests = plan.getSingleInstallmentAmount() - principal ;
+        
+        if (plan.getInterestRatePerMonth()>0){
+            interests = Utils.myRound( plan.getSingleInstallmentAmount() - principal , plan.numberOfDecimals );
+        }else{
+            interests = 0 ;
+            total = principal;
+        }
         
         // outstanding principal
         if (prevInstallment==null){
