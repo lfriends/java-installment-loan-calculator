@@ -15,7 +15,9 @@ public class Main {
      */
     public static void main(String[] args) {
        
-        //System.out.print( (new Plan ( 10000, 12, 4.5, new java.util.Date()  )).toStringAsTable() );
+        //System.out.print( (new Plan ( 10000, 12, 4.5, new java.util.Date() )).toStringAsTable() ); 
+        //System.out.print( (new Plan ( 11000, 12, 4.5, new java.util.Date() , 1000 )).toStringAsTable() ); 
+        //1if(true)return;
         
         System.out.println("====== Installment Calculator  ::  github.com/lfriends ======");
         
@@ -23,6 +25,8 @@ public class Main {
 
         System.out.println("Please enter the loan amount (Eg 10000):");
         String str_amount = scanner.nextLine();        
+        System.out.println("Please enter the advance payment amount (Eg 1000 or 0):");
+        String str_advance = scanner.nextLine();        
         System.out.println("Please enter the interest rate in % (Eg 4.5):");
         String str_interest = scanner.nextLine();
         System.out.println("Please enter the loan duration inmonts (Eg 12):");
@@ -40,11 +44,12 @@ public class Main {
         }
         
         double initialAmount = Double.parseDouble(str_amount);
+        double advanceAmount = Double.parseDouble(str_advance);
         double taxRatePerc = Double.parseDouble(str_interest); 
         int numberOfMonths = Integer.parseInt(str_months) ;
         
         // ----------------------------------------
-        Plan p = new Plan ( initialAmount, numberOfMonths, taxRatePerc, startDate  );
+        Plan p = new Plan ( initialAmount, numberOfMonths, taxRatePerc, startDate , advanceAmount );
         // ----------------------------------------
         
         System.out.print( p.toStringAsTable() );

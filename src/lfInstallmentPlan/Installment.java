@@ -34,8 +34,8 @@ public class Installment {
         }
         
         if (currentInstallmentNumber==1){
-            principal = plan.getSingleInstallmentAmount() - plan.getPrincipalAmount() * plan.getInterestRatePerMonth()  ;
-            debtPaidPre = 0 ;
+            principal = plan.getSingleInstallmentAmount() - (plan.getPrincipalAmount()-plan.getAdvancePaymentAmount() )* plan.getInterestRatePerMonth()  ;
+            debtPaidPre = plan.getAdvancePaymentAmount()  ;
         }else if (currentInstallmentNumber==plan.getNumberOfInstallments()){
             principal = plan.getPrincipalAmount() - this.debtPaidPre ;
             
@@ -46,8 +46,8 @@ public class Installment {
         
         // outstanding principal
         if (prevInstallment==null){
-            outstandingPrincipal = plan.getPrincipalAmount()-principal ;
-            debtPaidPost = principal ;
+            outstandingPrincipal = Utils.myRound( plan.getPrincipalAmount()-principal - plan.getAdvancePaymentAmount() , plan.numberOfDecimals ) ; 
+            debtPaidPost = principal + plan.getAdvancePaymentAmount();
         
         }else{
 

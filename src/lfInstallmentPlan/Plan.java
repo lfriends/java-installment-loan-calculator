@@ -17,6 +17,7 @@ public class Plan {
     private double totalAmount; 
     private double principalAmount;
     private double interestAmount;
+    private double advancePaymentAmount ;
     private double singleInstallmentAmount;
     private java.util.Date firstDueDate;
     private java.util.Date lastDueDate;
@@ -24,21 +25,34 @@ public class Plan {
 
     java.util.List<Installment> installments ;
 
-    public Plan(double principal, int numberOfInstallments, double interestRateYear, java.util.Date firstDueDate ){
+    public Plan(double principal, int numberOfInstallments, double interestRateYear, java.util.Date firstDueDate, double advancePaymentAmount ){
         setPrincipalAmount(principal);
         setInterestRate(interestRateYear);
         setNumberOfInstallments(numberOfInstallments);
         setFirstDueDate(firstDueDate);
+        setAdvancePaymentAmount(advancePaymentAmount);
+        doCalculate();
+    }
+
+    public Plan(double principal, int numberOfInstallments, double interestRateYear, java.util.Date firstDueDate) {
+        setPrincipalAmount(principal);
+        setInterestRate(interestRateYear);
+        setNumberOfInstallments(numberOfInstallments);
+        setFirstDueDate(firstDueDate);
+        setAdvancePaymentAmount(0);
         doCalculate();
     }
     
-    
     public void doCalculate(){
 
-        singleInstallmentAmount = Utils.myRound( principalAmount * interestRatePerMonth /  (1- Math.pow(1+interestRatePerMonth , -numberOfInstallments) ) , numberOfDecimals );
-        totalAmount = singleInstallmentAmount * numberOfInstallments ;
+        double netPrincipalAmount = principalAmount ;
+        netPrincipalAmount -= advancePaymentAmount;
+        
+        singleInstallmentAmount = Utils.myRound( netPrincipalAmount * interestRatePerMonth /  (1- Math.pow(1+interestRatePerMonth , -numberOfInstallments) ) , numberOfDecimals );
+        totalAmount = singleInstallmentAmount * numberOfInstallments + advancePaymentAmount ;
         interestAmount = Utils.myRound( totalAmount - principalAmount, numberOfDecimals ) ;
         installments = new java.util.ArrayList<>();
+        
         
         for (int currentInstallmentNumber =1;currentInstallmentNumber <= numberOfInstallments; currentInstallmentNumber ++)
         {
@@ -62,6 +76,10 @@ public class Plan {
         this.principalAmount = principal;
     }
 
+    public void setAdvancePaymentAmount(double advancePaymentAmount) {
+        this.advancePaymentAmount = advancePaymentAmount;
+    }
+    
     public void setFirstDueDate(Date firstDueDate) {
         this.firstDueDate = firstDueDate;
     }    
@@ -84,6 +102,10 @@ public class Plan {
 
     public double getPrincipalAmount() {
         return principalAmount;
+    }
+
+    public double getAdvancePaymentAmount() {
+        return advancePaymentAmount;
     }
 
     public double getInterestAmount() {
@@ -112,6 +134,7 @@ public class Plan {
                 + "duration=" + numberOfInstallments 
                 + ", interest%=" + interestRatePerYear 
                 + ", principal=" + Utils.double2s(principalAmount) 
+                + ", advancePayment=" + Utils.double2s(advancePaymentAmount) 
                 + ", interest=" + Utils.double2s(interestAmount) 
                 + ", total=" + Utils.double2s(totalAmount) 
                 + ", installment=" + Utils.double2s(singleInstallmentAmount) 
@@ -131,6 +154,7 @@ public class Plan {
         
         sb.append( line);     
         sb.append(Utils.rpad("Principal ",25,".")).append(" ").append(Utils.double2s(this.getPrincipalAmount() )).append("\n");
+        sb.append(Utils.rpad("Advance payment ",25,".")).append(" ").append(Utils.double2s(this.getAdvancePaymentAmount())).append("\n");
         sb.append(Utils.rpad("Interest rate ",25,".")).append(" ").append(Utils.double2s(this.getInterestRate() )).append("%").append("\n");
         sb.append(Utils.rpad("Duration ",25,".")).append(" ").append(this.getNumberOfInstallments()).append(" months").append("\n");
         sb.append(Utils.rpad("Monthly payments ",25,".")).append(" ").append(Utils.double2s(this.getSingleInstallmentAmount())).append("\n");
@@ -139,33 +163,44 @@ public class Plan {
 
         sb.append("\n"); 
         
-        sb.append( Utils.rpad( "Month", 5, " ")).append(" | ");
-        sb.append( Utils.rpad( "Due date", x, " ") ).append(" | ");
-        sb.append( Utils.rpad( "Installment", x, " ") ).append(" | ");
-        sb.append( Utils.rpad( "Principal", x, " ") ).append(" | ");
-        sb.append( Utils.rpad( "Interest", x, " ") ).append(" | ");
-        sb.append( Utils.rpad( "Balance", x, " ")).append(" | ");
-        sb.append( Utils.rpad( "Debt Paid", x, " ") ).append(" \n");
+        sb.append( Utils.rpad( "Month", 5)).append(" | ");
+        sb.append( Utils.rpad( "Due date", x) ).append(" | ");
+        sb.append( Utils.rpad( "Installment", x) ).append(" | ");
+        sb.append( Utils.rpad( "Principal", x) ).append(" | ");
+        sb.append( Utils.rpad( "Interest", x) ).append(" | ");
+        sb.append( Utils.rpad( "Balance", x)).append(" | ");
+        sb.append( Utils.rpad( "Debt Paid", x) ).append(" \n");
         sb.append(line);
+        
+        if (this.getAdvancePaymentAmount()>0){
+            sb.append(Utils.rpad( "ADV PAYMENT", 5)).append(" | ");
+            sb.append(Utils.rpad( "--", x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(this.getAdvancePaymentAmount()), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(this.getAdvancePaymentAmount()), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(0d), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(this.getTotalAmount()-this.getAdvancePaymentAmount() ), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(this.getAdvancePaymentAmount()), x)).append(" \n");
+            
+        }
         
         for ( Installment i : this.getInstallments() ){
             sb.append(Utils.rpad( ""+i.getNumber(), 5, " ")).append(" | ");
-            sb.append(Utils.rpad( Utils.date2s(i.getDueDate()), x, " ")).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getTotalAmount()), x, " ")).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getPrincipalAmount()), x, " ")).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getInterestAmount()), x, " ")).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getOutstandingPrincipal()), x, " ")).append(" | ");
-            sb.append(Utils.rpad( Utils.double2s(i.getDebtPaid()), x, " ")).append(" \n");
+            sb.append(Utils.rpad( Utils.date2s(i.getDueDate()), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(i.getTotalAmount()), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(i.getPrincipalAmount()), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(i.getInterestAmount()), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(i.getOutstandingPrincipal()), x)).append(" | ");
+            sb.append(Utils.rpad( Utils.double2s(i.getDebtPaid()), x)).append(" \n");
         }
         sb.append(line);
         
-        sb.append( Utils.rpad( "Total", 5, " ")).append("   ");
-        sb.append( Utils.rpad( "", x, " ") ).append(" | ");
-        sb.append( Utils.rpad( Utils.double2s(this.getTotalAmount()), x, " ") ).append(" | ");
-        sb.append(Utils.rpad(Utils.double2s(this.getPrincipalAmount()), x, " ") ).append(" | ");
-        sb.append( Utils.rpad( Utils.double2s(this.getInterestAmount()) , x, " ") ).append(" | ");
-        sb.append( Utils.rpad( "", x, " ")).append("   ");
-        sb.append( Utils.rpad( "", x, " ") ).append("\n");
+        sb.append( Utils.rpad( "Total", 5)).append("   ");
+        sb.append( Utils.rpad( "", x) ).append(" | ");
+        sb.append( Utils.rpad( Utils.double2s(this.getTotalAmount()), x) ).append(" | ");
+        sb.append( Utils.rpad( Utils.double2s(this.getPrincipalAmount()), x) ).append(" | ");
+        sb.append( Utils.rpad( Utils.double2s(this.getInterestAmount()) , x) ).append(" | ");
+        sb.append( Utils.rpad( "", x)).append("   ");
+        sb.append( Utils.rpad( "", x) ).append("\n");
         sb.append(line);
                 
         return sb.toString();
