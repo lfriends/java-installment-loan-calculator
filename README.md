@@ -2,6 +2,7 @@
 A java installment loan calculator library
 that calculates the monthly installment amounts for a loan.
 
+![sample](./assets/loan-example.jpg)
 
 ## Features
 
@@ -15,7 +16,6 @@ that calculates the monthly installment amounts for a loan.
     - and so on.
 - **Advance payment:** possibility to define an *advance payment* amount, which will be excluded from the interest calculation (See [Example 2](#example-2-with-advance-payment))
 
-![sample](./assets/loan-example.jpg)
 
 ## Getting Started
 
