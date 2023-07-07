@@ -12,37 +12,28 @@ public class Installment {
     
     private final int number;
     private double total;
-    private final double principal;
+    private double principal;
     private double interests;
     private double outstandingPrincipal ;
     private double outstandingInterests; 
-    private double debtPaidPre; 
-    private double debtPaidPost; 
+    private double debtPaid; 
     private final java.util.Date dueDate;
 
     public Installment(Plan plan, int currentInstallmentNumber ) {
-       
+        
         this.number = currentInstallmentNumber;
         this.total = plan.getSingleInstallmentAmount();
+        boolean firstIntallment = currentInstallmentNumber==1 ;
+        boolean lastInstallment = plan!=null && currentInstallmentNumber==plan.getNumberOfInstallments() ;
+        
         Installment prevInstallment = null ;
+        if (number>1)prevInstallment=plan.getInstallments().get(currentInstallmentNumber-2);
         
-        if (currentInstallmentNumber==1){
-            this.debtPaidPre = 0 ;
+        if (firstIntallment){
+            principal = Utils.myRound( plan.getSingleInstallmentAmount() - (plan.getPrincipalAmount()-plan.getAdvancePaymentAmount() )* plan.getInterestRatePerMonth()  , plan.numberOfDecimals );
         }else{
-            prevInstallment = plan.getInstallments().get(currentInstallmentNumber-2);
-            this.debtPaidPre = prevInstallment.debtPaidPre + Utils.myRound(prevInstallment.getPrincipalAmount(), plan.numberOfDecimals );
+            principal = Utils.myRound(prevInstallment .principal * (1 + plan.getInterestRatePerMonth() ) , plan.numberOfDecimals );
         }
-        
-        if (currentInstallmentNumber==1){
-            principal = plan.getSingleInstallmentAmount() - (plan.getPrincipalAmount()-plan.getAdvancePaymentAmount() )* plan.getInterestRatePerMonth()  ;
-            debtPaidPre = plan.getAdvancePaymentAmount()  ;
-        }else if (currentInstallmentNumber==plan.getNumberOfInstallments()){
-            principal = plan.getPrincipalAmount() - this.debtPaidPre ;
-            
-        }else{
-            this.principal = prevInstallment .principal * (1 + plan.getInterestRatePerMonth() ) ;
-        }
-        this.interests = plan.getSingleInstallmentAmount() - principal ;
         
         if (plan.getInterestRatePerMonth()>0){
             interests = Utils.myRound( plan.getSingleInstallmentAmount() - principal , plan.numberOfDecimals );
@@ -51,27 +42,16 @@ public class Installment {
             total = principal;
         }
         
-        // outstanding principal
-        if (prevInstallment==null){
-            outstandingPrincipal = Utils.myRound( plan.getPrincipalAmount()-principal - plan.getAdvancePaymentAmount() , plan.numberOfDecimals ) ; 
-            debtPaidPost = principal + plan.getAdvancePaymentAmount();
-        
-        }else{
-
-            if (currentInstallmentNumber!=plan.getNumberOfInstallments() ){
-                this.outstandingPrincipal = prevInstallment.outstandingPrincipal - Utils.myRound( this.principal, plan.numberOfDecimals ) ; 
-                debtPaidPost = prevInstallment.debtPaidPost + principal ;
-            
-            }else{
-                this.outstandingPrincipal = 0 ;   
-                debtPaidPost = plan.getPrincipalAmount() ;
-            }
+        // last installment round correction 
+        if (lastInstallment){
+            principal = Utils.myRound( prevInstallment.outstandingPrincipal , plan.numberOfDecimals );
+            interests = prevInstallment.outstandingInterests ;
         }
-        
-        this.outstandingInterests = (prevInstallment==null ? plan.getInterestAmount()  : prevInstallment.outstandingInterests ) - this.interests;
-        
+            
+        total = principal + interests ;
+                
         if (currentInstallmentNumber==1){
-            this.dueDate = plan.getFirstDueDate();
+            dueDate = plan.getFirstDueDate();
         }else{
             int day = Utils.getDayOfMonth( plan.getFirstDueDate() );
             java.util.Date newDate = Utils.getFirstDayOfMonth( plan.getFirstDueDate() );
@@ -82,8 +62,10 @@ public class Installment {
             while ( month <  Utils.getMonthNumber( newDate ) )
                 newDate = Utils.addDay( newDate, -1 );
                     
-            this.dueDate =  newDate;
+            dueDate =  newDate;
         }
+        
+        updateRemainingAmounts(plan);
     }
 
     public int getNumber() {
@@ -111,7 +93,7 @@ public class Installment {
     }
 
     public double getDebtPaid() {
-        return debtPaidPost;
+        return debtPaid;
     }
 
     public Date getDueDate() {
@@ -121,16 +103,61 @@ public class Installment {
     @Override
     public String toString() {
         return 
-            "Installment{#=" + number 
+            "\nInstallment{#=" + number 
              + ", dueDate=" + Utils.date2s(dueDate) 
              + ", total=" + Utils.double2s(total) 
              + ", principal=" + Utils.double2s(principal) 
              + ", interests=" + Utils.double2s(interests) 
-             + ", outstandingPrincipal=" + Utils.double2s(outstandingPrincipal) 
-             + ", outstandingInterests=" + Utils.double2s(outstandingInterests) 
-             + ", debtPaid=" + Utils.double2s(debtPaidPost) 
+             + ", debt=" + Utils.double2s(outstandingPrincipal) 
+             + ", interestsOuts=" + Utils.double2s(outstandingInterests) 
              + '}';
     }
-    
+
+    protected void setInterestAmount(double d) {
+        this.interests = d ;
+    }
+
+    protected void setTotalAmount(double d) {
+        this.total = d ;
+    }
+
+    protected void setPrincipalAmount(double d) {
+        this.principal = d ;
+    }
+
+    public double getOutstandingTotal() {
+        return getOutstandingPrincipal() + getOutstandingInterests() ;
+    }
+
+    void updateRemainingAmounts(Plan plan) {
+        
+        /* updating
+        debtPaid (principal)
+        outstantingPrincipal
+        outstandingInterest
+        */
+        
+        Installment prevInstallment = null ;
+        if (number>1)prevInstallment=plan.getInstallments().get(number-2);
+        boolean firstIntallment = number==1 ;
+        boolean lastInstallment = plan!=null && number==plan.getNumberOfInstallments() ;
+        
+        if (firstIntallment){
+            debtPaid =  Utils.myRound( principal , plan.numberOfDecimals ) ;       
+            outstandingPrincipal = Utils.myRound( plan.getPrincipalAmount()-principal - plan.getAdvancePaymentAmount() , plan.numberOfDecimals ) ; 
+            outstandingInterests =  Utils.myRound( plan.getInterestAmount()  - interests , plan.numberOfDecimals ) ; 
+        }else{
+            debtPaid = Utils.myRound( prevInstallment.debtPaid + principal, plan.numberOfDecimals );
+            outstandingPrincipal = Utils.myRound( prevInstallment.outstandingPrincipal - principal , plan.numberOfDecimals );
+            outstandingInterests =  Utils.myRound( prevInstallment.outstandingInterests  - interests, plan.numberOfDecimals );
+        }
+        
+        if (lastInstallment){
+            outstandingPrincipal = 0 ;
+            outstandingInterests = 0 ;
+        }
+        
+
+    }
     
 }

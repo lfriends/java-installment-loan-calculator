@@ -45,11 +45,12 @@ public class Plan {
     
     public void doCalculate(){
 
+
         double netPrincipalAmount = principalAmount ;
         netPrincipalAmount -= advancePaymentAmount;
         
         if (getInterestRatePerMonth()>0){
-            singleInstallmentAmount = Utils.myRound( netPrincipalAmount * interestRatePerMonth /  (1- Math.pow(1+interestRatePerMonth , -numberOfInstallments) ) , numberOfDecimals );
+            singleInstallmentAmount = Utils.myRound( netPrincipalAmount * getInterestRatePerMonth() /  (1- Math.pow(1+getInterestRatePerMonth() , -numberOfInstallments) ) , numberOfDecimals );
             totalAmount = singleInstallmentAmount * numberOfInstallments + advancePaymentAmount ;
             interestAmount = Utils.myRound( totalAmount - principalAmount, numberOfDecimals ) ;
         }else{
@@ -57,16 +58,15 @@ public class Plan {
             totalAmount= netPrincipalAmount + advancePaymentAmount ;
             interestAmount=0;
         }
-                
-        installments = new java.util.ArrayList<>();
         
+        installments = new java.util.ArrayList<>();
         
         for (int currentInstallmentNumber =1;currentInstallmentNumber <= numberOfInstallments; currentInstallmentNumber ++)
         {
-            Installment newInst = new Installment( this, currentInstallmentNumber ) ;
+            Installment newInst = new Installment( this, currentInstallmentNumber  ) ;
             installments.add( newInst ) ;
             this.lastDueDate = newInst.getDueDate() ;
-        }  
+        }
         
     }
 
@@ -95,7 +95,7 @@ public class Plan {
         return numberOfInstallments;
     }
 
-    public double getInterestRate() {
+    public double getInterestRatePerYearPercentage() {
         return interestRatePerYear;
     }
 
@@ -161,7 +161,7 @@ public class Plan {
         sb.append( line);     
         sb.append(Utils.rpad("Principal ",25,".")).append(" ").append(Utils.double2s(this.getPrincipalAmount() )).append("\n");
         sb.append(Utils.rpad("Advance payment ",25,".")).append(" ").append(Utils.double2s(this.getAdvancePaymentAmount())).append("\n");
-        sb.append(Utils.rpad("Interest rate ",25,".")).append(" ").append(Utils.double2s(this.getInterestRate() )).append("%").append("\n");
+        sb.append(Utils.rpad("Interest rate ",25,".")).append(" ").append(Utils.double2s(this.getInterestRatePerYearPercentage())).append("%").append("\n");
         sb.append(Utils.rpad("Duration ",25,".")).append(" ").append(this.getNumberOfInstallments()).append(" months").append("\n");
         sb.append(Utils.rpad("Monthly payments ",25,".")).append(" ").append(Utils.double2s(this.getSingleInstallmentAmount())).append("\n");
         sb.append(Utils.rpad("Intarest paid ",25,".")).append(" ").append(Utils.double2s(this.getInterestAmount())).append("\n");
@@ -211,5 +211,6 @@ public class Plan {
                 
         return sb.toString();
     }
+
     
 }
